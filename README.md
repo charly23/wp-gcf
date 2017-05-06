@@ -1,7 +1,8 @@
-# wp-gcf
 
-# Wordpress Gravity Contact Form : WP-GCF
+# Wordpress Gravity Contact Form ( WP-GCF )
 
-Wordpress Facebook Webmasters - Sharing
+# Manager
+![alt tag](https://github.com/charly23/wp-gcf/blob/master/screenshot/manager.png)
 
-![alt tag](https://github.com/charly23/wp-facebook-webmasters/blob/master/assets/screenshot/screen1.png)
+# Add New : Form
+![alt tag](https://github.com/charly23/wp-gcf/blob/master/screenshot/add-new.png)
