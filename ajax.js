@@ -333,6 +333,12 @@ jQuery ( function()
                 );
             }
 
+            if( $ids == 7 ) 
+            {
+                $vals = $params($input).find('.field-html-box').val();
+                $fields = { 'value':$vals, 'text':0 };
+            }
+
             var $advanced = get_data_advanced_filter( $input, $ids );
 
             if ( $params($input).find('.field-box-setting_bottom .field-box-setting_item input.field-display-top').is(':checked') ) {

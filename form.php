@@ -386,12 +386,20 @@
           { 
               $html = null;
 
-              $top = 'Top';
-              $inner = 'Inner';
+              $top = __( 'Setting : Option', 'text' );;
+              $inner = self::setting_inner_center();
               $bottom = self::page_foot();
 
               $html .= self::page_body( 'setting', $top, $inner, $bottom );
 
+              return $html;
+          }
+
+          public static function setting_inner_center () 
+          {
+              $html = null;
+              load::view( 'admin/setting/center' );
+              $html .= setting_center::form();
               return $html;
           }
 
