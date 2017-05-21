@@ -5,9 +5,13 @@
 
 ![alt tag](https://github.com/charly23/wp-gcf/blob/master/screenshot/manager.png)
 
-##### Add New : Form
+##### Add New : Standard Fields
 
 ![alt tag](https://github.com/charly23/wp-gcf/blob/master/screenshot/add-new.png)
+
+##### Add New : Advanced Fields
+
+![alt tag](https://github.com/charly23/wp-gcf/blob/master/screenshot/add-new-advanced.png)
 
 ##### Add New : Notification
 

@@ -84,6 +84,13 @@
                 $html .= html_var::_divend(); 
               }
 
+              if( $page_class == 'add_new' ) 
+              {
+                $html .= html_var::_div( array( 'class' => __( self::$slug ) . '_inner-footer ' . __( self::$slug ) . '_' . __( $page_class ) . '_inner-footer' ) );
+                $html .= static::page_foot();
+                $html .= html_var::_divend(); 
+              }
+
               return $html; 
           }
 
@@ -95,6 +102,10 @@
 
               $html .= html_var::_span( array( 'class' => 'option-btn') );
               $html .= __( 'Option', 'html' );
+              $html .= html_var::_spanend();
+
+              $html .= html_var::_span( array( 'class' => 'option-switch') );
+              $html .= self::add_new_switch_user();
               $html .= html_var::_spanend();
 
               $html .= html_var::_divend(); 
@@ -168,6 +179,15 @@
            * inner, html, style, ui
            * add new function handlers
           **/
+
+          public static function add_new_switch_user () 
+          {
+              $html = null;
+              $html .= __( 'Switch', 'html' );
+              load::view( 'admin/add_new/option' );
+              $html .= add_new_option::form_switch();
+              return $html;
+          }
 
           public static function add_new_inner () 
           { 

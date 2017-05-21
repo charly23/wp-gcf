@@ -206,6 +206,28 @@ jQuery ( function()
             return { 'id':$idvl, 'name':$name, 'excerpt':$exct, 'content':$desc, 'browse':$brow };
         }
 
+        function get_field_data_settings () 
+        {
+            $item = $params( '.add_new-setting_inner_wrap .add_new-setting_item' );
+
+            var $texts = $item.find( '.setting_button-text' ).val();
+            var $class = $item.find( '.setting_class-name' ).val();
+
+            if( $item.find( '.setting_entry-limit' ).is(':checked') == true ) {
+              var $limit = 1;
+            } else {
+              var $limit = 0;
+            }
+
+            if( $item.find( '.setting_logged-in' ).is(':checked') == true ) {
+              var $login = 1;
+            } else {
+              var $login = 0;
+            }
+
+            return { 'button_text':$texts, 'class_name':$class, 'entry_limit':$limit, 'logged-in':$login };
+        }
+
         function get_status_field_filter () 
         {
             var $sts = $params('.publish-status_pad .field-status-value').val();
@@ -406,6 +428,7 @@ jQuery ( function()
                     var $field_i = 0;
 
                     var $values = get_field_data_value();
+                    var $setting = get_field_data_settings();
                     var $status = get_status_field_filter();
                     var $datevl = get_date_field_filter();
 
@@ -424,7 +447,7 @@ jQuery ( function()
                         }
                     );
 
-                    var $data = { 'values':$values, 'status':$status, 'date':$datevl, 'id_position':$id, 'field':$field };
+                    var $data = { 'values':$values, 'setting':$setting, 'status':$status, 'date':$datevl, 'id_position':$id, 'field':$field };
 
                     ajax_actions_filters( 'ajaxs_insert_fields_form', $data, '', $loader_gif );
                  } 
@@ -527,6 +550,7 @@ jQuery ( function()
                 var $idvl = $params('.wp_gcf_inner-top .form-id-value').val();
 
                 var $values = get_field_data_value();
+                var $setting = get_field_data_settings();
                 var $status = get_status_field_filter();
                 var $datevl = get_date_field_filter();
 
@@ -545,7 +569,7 @@ jQuery ( function()
                     }
                 );
 
-                var $data = { 'values':$values, 'status':$status, 'date':$datevl, 'id_position':$id, 'field':$field };
+                var $data = { 'values':$values, 'setting':$setting, 'status':$status, 'date':$datevl, 'id_position':$id, 'field':$field };
 
                 ajax_actions_filters( 'ajaxs_insert_fields_form', $data, $debugs, $loader_gif );
 
@@ -559,11 +583,13 @@ jQuery ( function()
 
         $params ( '.manager-quick-item.item-submit' ).on( 'click', '.manager-quick-submit', function ()
             {
+                var $ids = $params(this).parents( '.manager-option-tr' ).find( 'input.option-checkbox' ).val();
                 var $name = $params(this).parents( '.manager-quick-edit_wrap' ).find( '.manager-quick-name' ).val();
+                var $content = $params(this).parents( '.manager-quick-edit_wrap' ).find( '.manager-content-input' ).val();
                 var $excerpt = $params(this).parents( '.manager-quick-edit_wrap' ).find( '.manager-quick-excerpt' ).val();
                 var $status = $params(this).parents( '.manager-quick-edit_wrap' ).find( '.manager-quick-status' ).val();
 
-                var $data = { 'name':$name, 'excerpt':$excerpt, 'status':$status };
+                var $data = { 'id':$ids, 'name':$name, 'content':$content, 'excerpt':$excerpt, 'status':$status };
 
                 ajax_actions_filters( 'ajaxs_quick_fields', $data, $debugs, '' );
             }
@@ -633,6 +659,21 @@ jQuery ( function()
 
                 ajax_actions_filters( 'ajaxs_insert_notification_form', $data, '', $notification_gif );
 
+            } 
+        );
+
+        $params ( '.notification-right_inner_email_option' ).on( 'click', 'a.submit_insert_notification-form.button', function() 
+            {
+                var $vals = [];
+                $params( '.notification-email-value.selected-email' ).each( function(i)
+                    {
+                        $vals[i] = $params(this).find( 'input.email-value' ).val();
+                    }
+                );
+
+                var $emails = { 'emails':$vals };
+
+                console.log( $emails );
             } 
         );
 
