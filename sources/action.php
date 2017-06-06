@@ -212,12 +212,60 @@
                       'notification' => $notification,
                   ), 
 
-                  array( 'id' => $ids ) ,
+                  array( 'id' => $ids ),
 
                   array( '%s' ),
 
                   array( '%d' )
               );
+          }
+
+          public static function submit_notification_email () 
+          {
+              $vals = array();
+              $inputs = input::post_is_object();
+
+              $ids = intval( $inputs->value['form_id'] );
+              $emails = $inputs->value['emails'];
+
+              $rows = db::query_rows_id( $ids );
+              $notification = unserialize( $rows->notification );
+
+              if( !empty( $notification['to'] ) ) {
+                  $to_value = $notification['to'];
+              } else {
+                  $to_value = null;
+              }
+
+              if( !empty( $notification['cc'] ) ) {
+                  $cc_value = $notification['cc'];
+              } else {
+                  $cc_value = null;
+              }
+
+              if( !empty( $notification['bcc'] ) ) {
+                  $bcc_value = $notification['bcc'];
+              } else {
+                  $bcc_value = null;
+              }
+
+              if( is_array( $emails ) ) :
+                  foreach( $emails as $keys => $values ) :
+
+                      $to_emails = array_merge( $to_value, $cc_value, $bcc_value, array( trim( $values ) ) ); ;
+                      $headers = array( 'Content-Type: text/html; charset=UTF-8' );
+
+                      $datas = array (
+                          'to' => $to_emails,
+                          'subject' => isset( $notification['subject'] ) ? trim( $notification['subject'] ) : 'WP-GCF : Send All Notification',
+                          'body' => isset( $notification['message'] ) ? trim( $notification['message'] ) : 'Send all notification email from wp-gcf form',
+                          'headers' => $headers
+                      );
+
+                      send_email::data( $datas );
+
+                  endforeach; 
+              endif;
           }
 
           /**
@@ -237,7 +285,6 @@
                 //$phpmailer->From = "you@yourdomail.com";
                 //$phpmailer->FromName = "Your Name";
             }
-
           **/
 
           public static function insert_smtp_option () 
@@ -411,7 +458,21 @@
                   endif;
 
               }
+          }
 
+          public static function entries_delete_data () 
+          {
+              $inputs = input::post_is_object();
+              $action = $inputs->action;
+
+              if( $action ) 
+              {
+                  $value = $inputs->value;
+
+                  foreach( $value as $keys => $results ) :
+                      self::deletes( self::$tbls['gcf-entries'], array( 'id' => intval( $results ) ), array( '%d' ) );
+                  endforeach;
+              }
           }
 
           // FRONTEND : get field data insert : entries
@@ -424,12 +485,51 @@
               $form_id = intval( $values['form_id'] );
               $form_data = serialize( $values['data'] );
 
+              // insert entries
               self::inserts( self::$tbls['gcf-entries'],
 
                   array( 'entries' => $form_data, 'form_id' => $form_id ), 
 
                   array( '%s', '%d' )
               );
+
+
+              // email data entries
+              load::view( 'front/front-email' );
+              $body = front_email::template( $values );
+
+              $rows = db::query_rows_id( $form_id );
+              $notification = unserialize( $rows->notification );
+
+              if( !empty( $notification['to'] ) ) {
+                  $to_value = $notification['to'];
+              } else {
+                  $to_value = null;
+              }
+
+              if( !empty( $notification['cc'] ) ) {
+                  $cc_value = $notification['cc'];
+              } else {
+                  $cc_value = null;
+              }
+
+              if( !empty( $notification['bcc'] ) ) {
+                  $bcc_value = $notification['bcc'];
+              } else {
+                  $bcc_value = null;
+              }
+
+              $to_emails = array_merge( $to_value, $cc_value, $bcc_value );
+              $headers = array( 'Content-Type: text/html; charset=UTF-8' );
+
+              $datas = array (
+                  'to' => $to_emails,
+                  'subject' => isset( $notification['subject'] ) ? trim( $notification['subject'] ) : 'WP-GCF : Send Notification',
+                  'body' => isset( $notification['message'] ) ? trim( $notification['message'] ) . __( $body, 'body-form' ) : 'Send notification email from wp-gcf form', 
+                  'headers' => $headers
+              );
+
+              send_email::data( $datas );
 
           }
           

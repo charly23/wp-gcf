@@ -576,6 +576,8 @@ jQuery ( function()
                 if( $idvl == 0 ) {
                     window.location = $redirect;
                 }
+
+                return false;
             } 
         );
 
@@ -659,21 +661,25 @@ jQuery ( function()
 
                 ajax_actions_filters( 'ajaxs_insert_notification_form', $data, '', $notification_gif );
 
+                return false;
             } 
         );
 
         $params ( '.notification-right_inner_email_option' ).on( 'click', 'a.submit_insert_notification-form.button', function() 
             {
+
+                var $idvl = $params('.wp_gcf_inner-top .form-id-value').val();
+
                 var $vals = [];
                 $params( '.notification-email-value.selected-email' ).each( function(i)
                     {
                         $vals[i] = $params(this).find( 'input.email-value' ).val();
                     }
-                );
+                ); 
 
-                var $emails = { 'emails':$vals };
+                var $emails = { 'form_id':$idvl, 'emails':$vals };
 
-                console.log( $emails );
+                ajax_actions_filters( 'ajaxs_submit_notification_email', $emails, $debugs, $notification_gif );
             } 
         );
 
@@ -711,6 +717,27 @@ jQuery ( function()
                 var $data = { 'form_id':$idvl, 'fields':$value };
 
                 ajax_actions_filters( 'ajaxs_entries_setting_form', $data, $debugs, '' );
+            }
+        );
+
+        $params( '.entries_header .entries-header_inner' ).on ( 'click', 'a.entries-delete_btn', function()
+            {
+                var $checked = [];
+                
+                $params( 'input.entries-item__selected' ).each( function(i)
+                    {
+                        var $ids = $params(this).val();
+
+                        if( $params(this).is( ':checked' ) == true ) {
+                            $checked[i] = $ids;
+                            $params( '.entries_body-items.entries-item-' + $ids ).remove();
+                        } else {
+                            $checked[i] = 0;
+                        }
+                    }
+                );
+
+                ajax_actions_filters( 'ajaxs_entries_delete_data', $checked, $debugs, '' );
             }
         );
 
