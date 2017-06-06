@@ -674,7 +674,9 @@
                 $html .= self::_div( array( 'class' => 'field-pad_item '.$slug.'-box_pad' ) );
                 $html .= __( 'File Upload', 'label' );
                 $html .= self::_divend();
-            } **/
+            } 
+
+            **/
 
             endif;
 
